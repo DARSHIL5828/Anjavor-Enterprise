@@ -1,0 +1,22 @@
+{
+  "name": "Anjavor Enterprise",
+  "short_name": "Anjavor",
+  "description": "Discover. Assess. Remediate. Secure. Cybersecurity and IT software solutions.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#cfe5f5",
+  "theme_color": "#0284c7",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
