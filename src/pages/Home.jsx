@@ -19,6 +19,7 @@ import MagneticButton from '../components/MagneticButton';
 import TiltCard from '../components/TiltCard';
 import AnimatedCounter from '../components/AnimatedCounter';
 import siteConfig from '../config/site';
+import useMobileDetect from '../hooks/useMobileDetect';
 
 /* ────── Keyword Switcher ────── */
 const heroHighlights = [
@@ -68,40 +69,44 @@ function HolographicHeadline() {
 
 /* ────── Hero ────── */
 function Hero() {
+  const isMobile = useMobileDetect();
+
   return (
     <section className="relative min-h-[96vh] flex flex-col items-center justify-center overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-24">
-      {/* Subtle Grid */}
+      {/* Subtle Grid — hidden on mobile via CSS */}
       <div className="absolute inset-0 cyber-grid-perspective opacity-40 pointer-events-none" />
 
-      {/* Particle Field */}
-      <ParticleField count={26} variant="cyan" />
+      {/* Particle Field — already hidden below sm breakpoint, but skip rendering entirely on mobile */}
+      {!isMobile && <ParticleField count={26} variant="cyan" />}
 
-      {/* Ambient Glows */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        <motion.div
-          className="absolute w-[600px] h-[600px] rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(125,211,252,0.15) 0%, transparent 68%)',
-            top: '5%',
-            left: '15%',
-          }}
-          animate={{ x: [0, 40, -30, 0], y: [0, -30, 20, 0], scale: [1, 1.08, 0.96, 1] }}
-          transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute w-[500px] h-[500px] rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%)',
-            bottom: '10%',
-            right: '12%',
-          }}
-          animate={{ x: [0, -30, 20, 0], y: [0, 25, -40, 0], scale: [1, 0.94, 1.06, 1] }}
-          transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        {/* Subtle Concentric Rings */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-ice/10 pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[950px] h-[950px] rounded-full border border-ice/5 pointer-events-none" />
-      </div>
+      {/* Ambient Glows — skip on mobile (two large floating motion.div with infinite animation) */}
+      {!isMobile && (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+          <motion.div
+            className="absolute w-[600px] h-[600px] rounded-full"
+            style={{
+              background: 'radial-gradient(circle, rgba(125,211,252,0.15) 0%, transparent 68%)',
+              top: '5%',
+              left: '15%',
+            }}
+            animate={{ x: [0, 40, -30, 0], y: [0, -30, 20, 0], scale: [1, 1.08, 0.96, 1] }}
+            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute w-[500px] h-[500px] rounded-full"
+            style={{
+              background: 'radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%)',
+              bottom: '10%',
+              right: '12%',
+            }}
+            animate={{ x: [0, -30, 20, 0], y: [0, 25, -40, 0], scale: [1, 0.94, 1.06, 1] }}
+            transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          {/* Subtle Concentric Rings */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-ice/10 pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[950px] h-[950px] rounded-full border border-ice/5 pointer-events-none" />
+        </div>
+      )}
 
       <div className="container-default px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-4xl mx-auto">
@@ -171,15 +176,21 @@ function Hero() {
           </AnimatedSection>
         </div>
 
-        {/* Dashboard Showcase */}
+        {/* Dashboard Showcase — on mobile, no floating animation */}
         <div className="mt-14 lg:mt-18 relative">
-          <motion.div
-            className="relative z-10"
-            animate={{ y: [0, -8, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <VAPTDashboard />
-          </motion.div>
+          {isMobile ? (
+            <div className="relative z-10">
+              <VAPTDashboard />
+            </div>
+          ) : (
+            <motion.div
+              className="relative z-10"
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <VAPTDashboard />
+            </motion.div>
+          )}
         </div>
       </div>
     </section>

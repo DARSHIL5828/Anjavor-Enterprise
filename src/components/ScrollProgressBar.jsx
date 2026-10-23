@@ -1,12 +1,17 @@
 import { motion, useScroll, useSpring } from 'framer-motion';
+import useMobileDetect from '../hooks/useMobileDetect';
 
 export default function ScrollProgressBar() {
+  const isMobile = useMobileDetect();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 400,
     damping: 35,
     restDelta: 0.001,
   });
+
+  // On mobile, skip progress bar to eliminate continuous scroll-event spring computation
+  if (isMobile) return null;
 
   return (
     <motion.div

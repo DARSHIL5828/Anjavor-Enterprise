@@ -1,18 +1,14 @@
 import { useEffect, useRef } from 'react';
+import useMobileDetect from '../hooks/useMobileDetect';
 
 export default function GlobalBackground() {
   const canvasRef = useRef(null);
+  const isMobile = useMobileDetect();
 
   useEffect(() => {
     // On mobile / touch devices, skip the continuous canvas particle animation loop
     // to preserve GPU memory and prevent WebKit Jetsam process crashes.
-    const isTouch =
-      'ontouchstart' in window ||
-      navigator.maxTouchPoints > 0 ||
-      window.innerWidth < 768 ||
-      window.matchMedia('(pointer: coarse)').matches;
-
-    if (isTouch) return;
+    if (isMobile) return;
 
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -199,8 +195,22 @@ export default function GlobalBackground() {
       window.removeEventListener('mouseleave', handleMouseLeave);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, []);
+  }, [isMobile]);
 
+  /* ── Mobile: Ultra-lightweight static background ── */
+  if (isMobile) {
+    return (
+      <div
+        className="fixed inset-0 pointer-events-none z-0"
+        aria-hidden="true"
+        style={{
+          background: 'radial-gradient(ellipse 80% 60% at 50% 20%, rgba(125,211,252,0.12) 0%, transparent 70%)',
+        }}
+      />
+    );
+  }
+
+  /* ── Desktop: Full particle network + glow layers ── */
   return (
     <div
       className="fixed inset-0 pointer-events-none z-0 overflow-hidden"

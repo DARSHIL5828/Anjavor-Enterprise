@@ -1,8 +1,10 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import useMobileDetect from '../hooks/useMobileDetect';
 
 export default function TiltCard({ children, className = '', tiltAmount = 6, glare = true }) {
   const ref = useRef(null);
+  const isMobile = useMobileDetect();
 
   const mouseX = useMotionValue(0.5);
   const mouseY = useMotionValue(0.5);
@@ -16,8 +18,15 @@ export default function TiltCard({ children, className = '', tiltAmount = 6, gla
   const rotateX = useTransform(smoothMouseY, [0, 1], [tiltAmount, -tiltAmount]);
   const rotateY = useTransform(smoothMouseX, [0, 1], [-tiltAmount, tiltAmount]);
 
-  const glareX = useTransform(smoothMouseX, [0, 1], [0, 100]);
-  const glareY = useTransform(smoothMouseY, [0, 1], [0, 100]);
+  // On mobile, skip the entire 3D tilt / glare — just render the children in a plain wrapper.
+  // This avoids unnecessary GPU compositor layers for preserve-3d + willChange.
+  if (isMobile) {
+    return (
+      <div className={`relative ${className}`}>
+        {children}
+      </div>
+    );
+  }
 
   const handleMouseMove = (e) => {
     if (!ref.current) return;

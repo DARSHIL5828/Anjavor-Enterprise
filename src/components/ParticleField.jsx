@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
+import useMobileDetect from '../hooks/useMobileDetect';
 
 export default function ParticleField({ count = 24, variant = 'cyan', className = '' }) {
+  const isMobile = useMobileDetect();
+
   const particles = useMemo(() => {
+    if (isMobile) return [];
     const colors = [
       'rgba(2,132,199,0.18)',
       'rgba(3,105,161,0.14)',
@@ -17,7 +21,10 @@ export default function ParticleField({ count = 24, variant = 'cyan', className 
       duration: Math.random() * 8 + 8,
       color: colors[Math.floor(Math.random() * colors.length)],
     }));
-  }, [count, variant]);
+  }, [count, variant, isMobile]);
+
+  // On mobile, completely omit particle DOM nodes
+  if (isMobile) return null;
 
   return (
     <div className={`hidden sm:block absolute inset-0 overflow-hidden pointer-events-none ${className}`} aria-hidden="true">

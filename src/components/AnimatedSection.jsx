@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import useMobileDetect from '../hooks/useMobileDetect';
 
 // Modern fluid deceleration curve (Apple / Linear style)
 const fluidEase = [0.16, 1, 0.3, 1];
@@ -13,12 +14,32 @@ const containerVariants = {
   },
 };
 
+// Lighter mobile variants — less distance, shorter duration
+const containerVariantsMobile = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.04,
+      delayChildren: 0.02,
+    },
+  },
+};
+
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
   visible: {
     opacity: 1,
     y: 0,
     transition: { duration: 0.55, ease: fluidEase },
+  },
+};
+
+const fadeUpMobile = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: fluidEase },
   },
 };
 
@@ -29,6 +50,15 @@ const itemVariants = {
     y: 0,
     scale: 1,
     transition: { duration: 0.55, ease: fluidEase },
+  },
+};
+
+const itemVariantsMobile = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, ease: fluidEase },
   },
 };
 
@@ -68,8 +98,10 @@ const slideRight = {
 };
 
 export function AnimatedSection({ children, className = '', variant = 'fadeUp', delay = 0 }) {
+  const isMobile = useMobileDetect();
+
   const variants = {
-    fadeUp,
+    fadeUp: isMobile ? fadeUpMobile : fadeUp,
     fadeIn,
     scaleIn,
     slideLeft,
@@ -80,9 +112,9 @@ export function AnimatedSection({ children, className = '', variant = 'fadeUp', 
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.06, margin: '0px 0px 30px 0px' }}
-      variants={variants[variant] || fadeUp}
-      transition={{ delay }}
+      viewport={{ once: true, amount: isMobile ? 0.02 : 0.06, margin: '0px 0px 30px 0px' }}
+      variants={variants[variant] || (isMobile ? fadeUpMobile : fadeUp)}
+      transition={{ delay: isMobile ? Math.min(delay, 0.1) : delay }}
       className={className}
     >
       {children}
@@ -91,12 +123,14 @@ export function AnimatedSection({ children, className = '', variant = 'fadeUp', 
 }
 
 export function StaggerContainer({ children, className = '' }) {
+  const isMobile = useMobileDetect();
+
   return (
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.06, margin: '0px 0px 30px 0px' }}
-      variants={containerVariants}
+      viewport={{ once: true, amount: isMobile ? 0.02 : 0.06, margin: '0px 0px 30px 0px' }}
+      variants={isMobile ? containerVariantsMobile : containerVariants}
       className={className}
     >
       {children}
@@ -105,8 +139,10 @@ export function StaggerContainer({ children, className = '' }) {
 }
 
 export function StaggerItem({ children, className = '' }) {
+  const isMobile = useMobileDetect();
+
   return (
-    <motion.div variants={itemVariants} className={className}>
+    <motion.div variants={isMobile ? itemVariantsMobile : itemVariants} className={className}>
       {children}
     </motion.div>
   );

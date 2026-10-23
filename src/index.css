@@ -138,6 +138,27 @@
     }
   }
 
+  /*
+   * Mobile-optimized Glass Card:
+   * Uses fully opaque background instead of backdrop-filter: blur().
+   * backdrop-filter is the #1 mobile GPU killer — every blurred card
+   * creates a separate compositor layer that must composite the
+   * entire background behind it on every scroll frame.
+   */
+  .glass-card-mobile {
+    position: relative;
+    background: linear-gradient(145deg, #ffffff 0%, #eef7fe 100%);
+    /* NO backdrop-filter — opaque background eliminates the GPU compositing cost entirely */
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    outline: 1px solid rgba(179, 212, 236, 0.55);
+    border-radius: var(--radius);
+    box-shadow:
+      0 8px 20px -6px rgba(15, 23, 42, 0.07),
+      inset 0 1px 0 0 #ffffff;
+    /* Shorter transitions for mobile touch responsiveness */
+    transition: all 0.2s ease-out;
+  }
+
   .glass-card:hover {
     outline-color: rgba(2, 132, 199, 0.6);
     border-color: rgba(2, 132, 199, 0.4);
@@ -679,5 +700,112 @@
     100% {
       background-position: -200% 0;
     }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE PERFORMANCE OVERRIDES
+   ═══════════════════════════════════════════════════════════════
+   On mobile phones & tablets (touch or <= 767px), disable or
+   eliminate GPU-expensive bottlenecks:
+   - ALL backdrop-filter: blur() (compositor killer on Safari/Chrome)
+   - Infinite CSS animations (radar, border beam, ping, pulse)
+   - CSS mask-image & repeating sub-pixel grids
+   - Multi-layer 36px spread box-shadows
+   - will-change declarations that exhaust GPU texture memory
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1023px) and (pointer: coarse), (max-width: 767px) {
+  /* 1. Eliminate ALL backdrop-filter: blur() on mobile */
+  .glass-card,
+  .glass-card-hover,
+  .solid-card,
+  .glass-card-mobile,
+  [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* 2. Crisp, opaque card backgrounds without transparency composition */
+  .glass-card,
+  .glass-card-hover,
+  .solid-card {
+    background: linear-gradient(145deg, #ffffff 0%, #eef7fe 100%) !important;
+    box-shadow: 0 4px 14px -3px rgba(15, 23, 42, 0.08) !important;
+  }
+
+  /* 3. Kill all continuous infinite CSS animations that drain mobile battery & GPU */
+  .radar-sweep,
+  .particle-float,
+  .border-beam-container::before,
+  .cyber-badge-shimmer,
+  .laser-scan-line,
+  .animate-ping,
+  .animate-pulse {
+    animation: none !important;
+  }
+
+  /* Keep pulse/ping status indicators visible as solid dots */
+  .animate-ping {
+    opacity: 0.8 !important;
+    transform: none !important;
+  }
+
+  /* 4. Disable heavy CSS masked grids */
+  .cyber-grid-perspective {
+    background-image: none !important;
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+  }
+
+  /* 5. Simpler body background — single base surface */
+  body {
+    background: var(--bg) !important;
+    background-image: none !important;
+  }
+
+  /* 6. Kill large GPU blur divs */
+  .blur-3xl,
+  .blur-2xl {
+    filter: none !important;
+    -webkit-filter: none !important;
+    opacity: 0 !important;
+  }
+
+  /* 7. Reduce glow-blob cost */
+  .glow-blob {
+    opacity: 0.05 !important;
+    filter: blur(24px) !important;
+  }
+
+  /* 8. Prevent unnecessary GPU layer allocations */
+  .will-change-transform {
+    will-change: auto !important;
+  }
+
+  /* 9. Disable animated beam border */
+  .border-beam-container::before {
+    display: none !important;
+  }
+
+  /* 10. Kill glitch text duplicate pseudo-elements */
+  .glitch-text::before,
+  .glitch-text::after {
+    animation: none !important;
+    display: none !important;
+  }
+
+  /* 11. Simplify card hover transitions for touch tap */
+  .glass-card:hover,
+  .glass-card-hover:hover,
+  .solid-card:hover {
+    transform: none !important;
+    box-shadow: 0 4px 14px -3px rgba(15, 23, 42, 0.08) !important;
+  }
+
+  /* 12. Remove pulse-glow animation */
+  .pulse-glow {
+    animation: none !important;
+    box-shadow: none !important;
   }
 }

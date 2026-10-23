@@ -1,7 +1,9 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
+import useMobileDetect from '../hooks/useMobileDetect';
 
 export default function MagneticButton({ children, className = '', strength = 0.22, ...props }) {
+  const isMobile = useMobileDetect();
   const ref = useRef(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -10,8 +12,16 @@ export default function MagneticButton({ children, className = '', strength = 0.
   const smoothX = useSpring(x, springConfig);
   const smoothY = useSpring(y, springConfig);
 
+  // On mobile/touch devices, bypass magnetic physics completely
+  if (isMobile) {
+    return (
+      <div className={`inline-block ${className}`} {...props}>
+        {children}
+      </div>
+    );
+  }
+
   const handleMouseMove = (e) => {
-    if (window.matchMedia('(pointer: coarse)').matches) return;
     if (!ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const targetX = (e.clientX - rect.left - rect.width / 2) * strength;

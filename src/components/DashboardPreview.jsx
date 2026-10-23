@@ -5,9 +5,11 @@ import {
   Radio, Terminal, Cpu, Lock, Globe, Server, Laptop, Smartphone,
   Zap, ArrowRight, Check, X, ShieldAlert, Sparkles, Filter
 } from 'lucide-react';
+import useMobileDetect from '../hooks/useMobileDetect';
 
 /* ────── Rotating Cyber Radar Widget ────── */
 function CyberRadar() {
+  const isMobile = useMobileDetect();
   return (
     <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full border border-line bg-card flex items-center justify-center overflow-hidden shadow-card flex-shrink-0">
       {/* Concentric rings */}
@@ -22,28 +24,38 @@ function CyberRadar() {
         <div className="h-full w-px bg-line/80" />
       </div>
 
-      {/* Rotating radar sweep */}
-      <div className="absolute inset-0 radar-sweep">
-        <div
-          className="w-1/2 h-1/2 origin-bottom-right"
-          style={{
-            background: 'conic-gradient(from 0deg at 100% 100%, rgba(2,132,199,0.35) 0deg, rgba(2,132,199,0.1) 45deg, transparent 90deg)',
-          }}
-        />
-      </div>
+      {/* Rotating radar sweep — disabled on mobile to save GPU */}
+      {!isMobile && (
+        <div className="absolute inset-0 radar-sweep">
+          <div
+            className="w-1/2 h-1/2 origin-bottom-right"
+            style={{
+              background: 'conic-gradient(from 0deg at 100% 100%, rgba(2,132,199,0.35) 0deg, rgba(2,132,199,0.1) 45deg, transparent 90deg)',
+            }}
+          />
+        </div>
+      )}
 
-      {/* Blip 1 */}
-      <motion.div
-        className="absolute top-6 right-8 w-2 h-2 rounded-full bg-severity-low shadow-[0_0_8px_rgba(34,197,94,0.6)]"
-        animate={{ scale: [1, 1.6, 1], opacity: [0.4, 1, 0.4] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
-      {/* Blip 2 */}
-      <motion.div
-        className="absolute bottom-7 left-7 w-2 h-2 rounded-full bg-ice shadow-[0_0_8px_rgba(2,132,199,0.6)]"
-        animate={{ scale: [1, 1.8, 1], opacity: [0.3, 0.9, 0.3] }}
-        transition={{ duration: 2.4, repeat: Infinity, delay: 0.8 }}
-      />
+      {/* Blip 1 — static on mobile */}
+      {isMobile ? (
+        <div className="absolute top-6 right-8 w-2 h-2 rounded-full bg-severity-low" />
+      ) : (
+        <motion.div
+          className="absolute top-6 right-8 w-2 h-2 rounded-full bg-severity-low shadow-[0_0_8px_rgba(34,197,94,0.6)]"
+          animate={{ scale: [1, 1.6, 1], opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+      )}
+      {/* Blip 2 — static on mobile */}
+      {isMobile ? (
+        <div className="absolute bottom-7 left-7 w-2 h-2 rounded-full bg-ice" />
+      ) : (
+        <motion.div
+          className="absolute bottom-7 left-7 w-2 h-2 rounded-full bg-ice shadow-[0_0_8px_rgba(2,132,199,0.6)]"
+          animate={{ scale: [1, 1.8, 1], opacity: [0.3, 0.9, 0.3] }}
+          transition={{ duration: 2.4, repeat: Infinity, delay: 0.8 }}
+        />
+      )}
 
       <div className="relative z-10 text-[9px] font-mono text-ice-strong bg-ice-soft px-1.5 py-0.5 rounded border border-ice/20 font-bold">
         SCAN: 360°
@@ -97,10 +109,10 @@ function AttackSurfaceMesh({ isScanning, selectedNode, onSelectNode, remediatedN
       {/* Top Banner inside visualizer */}
       <div className="relative z-20 flex items-center justify-between text-[11px] font-mono">
         <span className="flex items-center gap-1.5 text-ice-strong bg-ice-soft px-2 py-0.5 rounded border border-ice/20 font-semibold">
-          <Zap size={12} className="animate-pulse text-ice" />
+          <Zap size={12} className="text-ice" />
           LIVE ATTACK SURFACE TOPOLOGY
         </span>
-        <span className="text-muted text-[10px]">
+        <span className="text-muted text-[10px] hidden sm:inline">
           Click any node to inspect &amp; auto-patch
         </span>
       </div>
@@ -229,7 +241,7 @@ function LiveTerminal({ logs, onRunCommand }) {
           <span className="text-white font-medium">REAL-TIME TELEMETRY STREAM</span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-severity-low animate-ping" />
+          <span className="w-1.5 h-1.5 rounded-full bg-severity-low" />
           <span className="text-[10px] text-severity-low">STREAMING</span>
         </div>
       </div>
@@ -317,6 +329,7 @@ function FleetMatrix() {
 
 /* ────── Main Unified Command Center ────── */
 export default function DashboardPreview({ initialMode = 'vapt' }) {
+  const isMobile = useMobileDetect();
   const [activeTab, setActiveTab] = useState(initialMode);
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(100);
@@ -370,48 +383,54 @@ export default function DashboardPreview({ initialMode = 'vapt' }) {
 
   return (
     <div className="relative w-full max-w-6xl mx-auto">
-      {/* Outer Glow Halo */}
-      <div
-        className="absolute -inset-1 rounded-3xl opacity-40 blur-2xl pointer-events-none transition-all duration-700"
-        style={{
-          background: 'radial-gradient(ellipse at 50% 50%, rgba(2,132,199,0.18) 0%, rgba(125,211,252,0.12) 50%, transparent 80%)',
-        }}
-      />
+      {/* Outer Glow Halo — simplified on mobile (no blur-2xl) */}
+      {!isMobile && (
+        <div
+          className="absolute -inset-1 rounded-3xl opacity-40 blur-2xl pointer-events-none transition-all duration-700"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 50%, rgba(2,132,199,0.18) 0%, rgba(125,211,252,0.12) 50%, transparent 80%)',
+          }}
+        />
+      )}
 
-      {/* Floating Micro-Badge Left */}
-      <motion.div
-        className="hidden xl:flex absolute -left-8 top-16 z-30 p-3 rounded-2xl bg-card/95 border border-line backdrop-blur-xl shadow-card items-center gap-3 w-60"
-        animate={{ y: [0, -8, 0] }}
-        transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        <div className="w-9 h-9 rounded-xl bg-ice-soft border border-ice/20 text-ice flex items-center justify-center flex-shrink-0">
-          <ShieldAlert size={18} />
-        </div>
-        <div>
-          <div className="text-[10px] font-mono font-bold text-ice-strong uppercase tracking-wider">Zero-Day Shield</div>
-          <div className="text-xs font-semibold text-ink">CVE-2026-4418 Blocked</div>
-          <div className="text-[10px] text-muted">Turnaround: 14ms via eBPF</div>
-        </div>
-      </motion.div>
+      {/* Floating Micro-Badge Left — hidden on mobile (saves two backdrop-blur layers + infinite animation) */}
+      {!isMobile && (
+        <motion.div
+          className="hidden xl:flex absolute -left-8 top-16 z-30 p-3 rounded-2xl bg-card/95 border border-line backdrop-blur-xl shadow-card items-center gap-3 w-60"
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <div className="w-9 h-9 rounded-xl bg-ice-soft border border-ice/20 text-ice flex items-center justify-center flex-shrink-0">
+            <ShieldAlert size={18} />
+          </div>
+          <div>
+            <div className="text-[10px] font-mono font-bold text-ice-strong uppercase tracking-wider">Zero-Day Shield</div>
+            <div className="text-xs font-semibold text-ink">CVE-2026-4418 Blocked</div>
+            <div className="text-[10px] text-muted">Turnaround: 14ms via eBPF</div>
+          </div>
+        </motion.div>
+      )}
 
-      {/* Floating Micro-Badge Right */}
-      <motion.div
-        className="hidden xl:flex absolute -right-8 bottom-20 z-30 p-3 rounded-2xl bg-card/95 border border-line backdrop-blur-xl shadow-card items-center gap-3 w-64"
-        animate={{ y: [0, 8, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-      >
-        <div className="w-9 h-9 rounded-xl bg-ice-soft border border-ice/20 text-ice-strong flex items-center justify-center flex-shrink-0">
-          <Sparkles size={18} />
-        </div>
-        <div>
-          <div className="text-[10px] font-mono font-bold text-ice-strong uppercase tracking-wider">Autonomous Posture</div>
-          <div className="text-xs font-semibold text-ink">8,140 Endpoints Synced</div>
-          <div className="text-[10px] text-muted">SOC-2 &amp; ISO-27001 Audit Ready</div>
-        </div>
-      </motion.div>
+      {/* Floating Micro-Badge Right — hidden on mobile */}
+      {!isMobile && (
+        <motion.div
+          className="hidden xl:flex absolute -right-8 bottom-20 z-30 p-3 rounded-2xl bg-card/95 border border-line backdrop-blur-xl shadow-card items-center gap-3 w-64"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        >
+          <div className="w-9 h-9 rounded-xl bg-ice-soft border border-ice/20 text-ice-strong flex items-center justify-center flex-shrink-0">
+            <Sparkles size={18} />
+          </div>
+          <div>
+            <div className="text-[10px] font-mono font-bold text-ice-strong uppercase tracking-wider">Autonomous Posture</div>
+            <div className="text-xs font-semibold text-ink">8,140 Endpoints Synced</div>
+            <div className="text-[10px] text-muted">SOC-2 &amp; ISO-27001 Audit Ready</div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Main Command Console Chassis */}
-      <div className="relative rounded-2xl border-beam-container bg-card border border-line shadow-card backdrop-blur-2xl overflow-hidden">
+      <div className={`relative rounded-2xl ${isMobile ? '' : 'border-beam-container backdrop-blur-2xl'} bg-card border border-line shadow-card overflow-hidden`}>
         {/* Chassis Hardware Top Bar */}
         <div className="flex flex-wrap items-center justify-between px-4 sm:px-6 py-3.5 border-b border-line bg-card/80 gap-3">
           {/* Left: Window Dots & Enclave Title */}
@@ -475,7 +494,7 @@ export default function DashboardPreview({ initialMode = 'vapt' }) {
               disabled={isScanning}
               className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
                 isScanning
-                  ? 'bg-ice-soft text-ice-strong border border-ice/30 animate-pulse'
+                  ? 'bg-ice-soft text-ice-strong border border-ice/30'
                   : 'btn-primary text-xs py-1.5 px-3'
               }`}
             >

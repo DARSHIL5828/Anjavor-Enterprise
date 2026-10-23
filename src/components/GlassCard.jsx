@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import useMobileDetect from '../hooks/useMobileDetect';
 
 export default function GlassCard({
   children,
@@ -16,11 +17,16 @@ export default function GlassCard({
   const cardRef = useRef(null);
   const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
   const [isHovered, setIsHovered] = useState(false);
+  const isMobile = useMobileDetect();
+
+  // On mobile, disable all mouse-tracking effects entirely
+  const enableSpotlight = spotlight && !isMobile;
+  const enableSheen = showSheen && !isMobile;
+  const enableTopBeam = topBeam && !isMobile;
+  const enableHover = hover && !isMobile;
 
   const handleMouseMove = (e) => {
-    if (!spotlight || !cardRef.current) return;
-    // Don't track spotlight or re-render during touch/scroll on mobile
-    if (window.matchMedia('(pointer: coarse)').matches) return;
+    if (!enableSpotlight || !cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     setMousePos({
       x: e.clientX - rect.left,
@@ -29,7 +35,7 @@ export default function GlassCard({
   };
 
   const handleMouseEnter = () => {
-    if (window.matchMedia('(pointer: coarse)').matches) return;
+    if (isMobile) return;
     setIsHovered(true);
   };
   const handleMouseLeave = () => {
@@ -37,7 +43,9 @@ export default function GlassCard({
     setMousePos({ x: -1000, y: -1000 });
   };
 
-  const baseClasses = 'glass-card group relative overflow-hidden select-none-text';
+  const baseClasses = isMobile
+    ? 'glass-card-mobile group relative overflow-hidden select-none-text'
+    : 'glass-card group relative overflow-hidden select-none-text';
 
   const cardContent = (
     <>
@@ -47,26 +55,28 @@ export default function GlassCard({
         aria-hidden="true"
       />
 
-      {/* 2. Top Dynamic Energy Beam (Expands on Hover) */}
-      {topBeam && (
+      {/* 2. Top Dynamic Energy Beam (Expands on Hover) — desktop only */}
+      {enableTopBeam && (
         <div
           className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-0 group-hover:w-4/5 transition-all duration-500 ease-out bg-gradient-to-r from-transparent via-ice to-transparent shadow-[0_0_12px_rgba(2,132,199,0.8)] z-30"
           aria-hidden="true"
         />
       )}
 
-      {/* 3. Subtle Cyber Micro-Grid Pattern */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.035] group-hover:opacity-[0.07] transition-opacity duration-500 z-0"
-        style={{
-          backgroundImage: `radial-gradient(rgba(2, 132, 199, 0.9) 1px, transparent 1px)`,
-          backgroundSize: '16px 16px',
-        }}
-        aria-hidden="true"
-      />
+      {/* 3. Subtle Cyber Micro-Grid Pattern — desktop only (causes paint on mobile) */}
+      {!isMobile && (
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.035] group-hover:opacity-[0.07] transition-opacity duration-500 z-0"
+          style={{
+            backgroundImage: `radial-gradient(rgba(2, 132, 199, 0.9) 1px, transparent 1px)`,
+            backgroundSize: '16px 16px',
+          }}
+          aria-hidden="true"
+        />
+      )}
 
-      {/* 4. Interactive Mouse Spotlight Glow */}
-      {spotlight && (
+      {/* 4. Interactive Mouse Spotlight Glow — desktop only */}
+      {enableSpotlight && (
         <div
           className="pointer-events-none absolute -inset-px rounded-[inherit] transition-opacity duration-300 z-10"
           style={{
@@ -77,8 +87,8 @@ export default function GlassCard({
         />
       )}
 
-      {/* 5. Interactive Border Light Following Cursor */}
-      {spotlight && isHovered && (
+      {/* 5. Interactive Border Light Following Cursor — desktop only */}
+      {enableSpotlight && isHovered && (
         <div
           className="pointer-events-none absolute -inset-px rounded-[inherit] z-10 transition-opacity duration-200"
           style={{
@@ -92,8 +102,8 @@ export default function GlassCard({
         />
       )}
 
-      {/* 6. Diagonal Sheen Wave Sweep on Hover */}
-      {showSheen && (
+      {/* 6. Diagonal Sheen Wave Sweep on Hover — desktop only */}
+      {enableSheen && (
         <div
           className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/35 to-transparent z-10 skew-x-12"
           aria-hidden="true"
@@ -126,17 +136,19 @@ export default function GlassCard({
         </div>
       )}
 
-      {/* 9. Cyber Corner Telemetry Indicator on Hover */}
-      <div
-        className="pointer-events-none absolute top-3.5 right-3.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"
-        aria-hidden="true"
-      >
-        <span className="w-1.5 h-1.5 rounded-full bg-ice animate-ping" />
-        <span className="w-1.5 h-1.5 rounded-full bg-ice shadow-[0_0_8px_rgba(2,132,199,0.85)]" />
-      </div>
+      {/* 9. Cyber Corner Telemetry Indicator on Hover — desktop only */}
+      {!isMobile && (
+        <div
+          className="pointer-events-none absolute top-3.5 right-3.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"
+          aria-hidden="true"
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-ice animate-ping" />
+          <span className="w-1.5 h-1.5 rounded-full bg-ice shadow-[0_0_8px_rgba(2,132,199,0.85)]" />
+        </div>
+      )}
 
-      {/* 10. Ambient Glow Blob */}
-      {glow && (
+      {/* 10. Ambient Glow Blob — desktop only */}
+      {glow && !isMobile && (
         <div
           className="glow-blob w-44 h-44 -top-12 -right-12 pointer-events-none z-0"
           style={{ background: glow }}
@@ -151,14 +163,14 @@ export default function GlassCard({
     </>
   );
 
-  if (!hover) {
+  if (!enableHover) {
     return (
       <div
         ref={cardRef}
         className={`${baseClasses} ${className}`}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onMouseMove={enableSpotlight ? handleMouseMove : undefined}
+        onMouseEnter={enableSpotlight ? handleMouseEnter : undefined}
+        onMouseLeave={enableSpotlight ? handleMouseLeave : undefined}
         {...props}
       >
         {cardContent}

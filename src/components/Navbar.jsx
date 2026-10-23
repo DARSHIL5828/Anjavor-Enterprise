@@ -11,6 +11,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { useScrolledPast } from '../hooks/useScroll';
+import useMobileDetect from '../hooks/useMobileDetect';
 import logoMark from '../assets/logo-mark.png';
 
 const mainNavItems = [
@@ -28,6 +29,7 @@ export default function Navbar() {
   const dropdownRef = useRef(null);
   const dropdownTimeoutRef = useRef(null);
   const scrolled = useScrolledPast(20);
+  const isMobile = useMobileDetect();
   const location = useLocation();
 
   const isProductsActive = location.pathname.startsWith('/products');
@@ -79,15 +81,17 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto">
         {/* Main Floating Capsule Dock (Note: NO overflow-hidden so mega-dropdown can extend freely) */}
         <motion.nav
-          animate={{
+          animate={isMobile ? undefined : {
             y: scrolled ? 2 : 0,
             scale: scrolled ? 0.995 : 1,
           }}
           transition={{ duration: 0.25, ease: 'easeOut' }}
           className={`pointer-events-auto relative flex items-center justify-between px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-2xl transition-all duration-300 ${
-            scrolled
-              ? 'bg-white/95 backdrop-blur-2xl border border-white/95 shadow-[0_18px_42px_-10px_rgba(2,132,199,0.16),0_0_0_1px_rgba(2,132,199,0.1)]'
-              : 'bg-white/85 backdrop-blur-xl border border-white/80 shadow-[0_10px_32px_-8px_rgba(15,23,42,0.06),0_0_0_1px_rgba(179,212,236,0.5)]'
+            isMobile
+              ? 'bg-white border border-line/80 shadow-sm'
+              : scrolled
+                ? 'bg-white/95 backdrop-blur-2xl border border-white/95 shadow-[0_18px_42px_-10px_rgba(2,132,199,0.16),0_0_0_1px_rgba(2,132,199,0.1)]'
+                : 'bg-white/85 backdrop-blur-xl border border-white/80 shadow-[0_10px_32px_-8px_rgba(15,23,42,0.06),0_0_0_1px_rgba(179,212,236,0.5)]'
           }`}
           aria-label="Main navigation"
           onMouseLeave={() => setHoveredNavIndex(null)}
@@ -97,12 +101,14 @@ export default function Navbar() {
             {/* Top Crystal Edge Catch-Light */}
             <div className="absolute top-0 left-6 right-6 h-[1.5px] bg-gradient-to-r from-transparent via-white to-transparent opacity-95" />
 
-            {/* Continuous Ambient Crystal Shimmer Beam */}
-            <motion.div
-              className="absolute top-0 left-0 h-[1.5px] w-56 bg-gradient-to-r from-transparent via-ice to-transparent opacity-70"
-              animate={{ x: ['-100%', '600%'] }}
-              transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut', repeatDelay: 2.5 }}
-            />
+            {/* Continuous Ambient Crystal Shimmer Beam — desktop only */}
+            {!isMobile && (
+              <motion.div
+                className="absolute top-0 left-0 h-[1.5px] w-56 bg-gradient-to-r from-transparent via-ice to-transparent opacity-70"
+                animate={{ x: ['-100%', '600%'] }}
+                transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut', repeatDelay: 2.5 }}
+              />
+            )}
           </div>
 
           {/* Left: Brand Identity with 3D Micro-Physics */}
@@ -115,7 +121,7 @@ export default function Navbar() {
               src={logoMark}
               alt="Anjavor Enterprise Logo"
               className="h-10 w-10 sm:h-11 sm:w-11 object-contain drop-shadow-sm flex-shrink-0"
-              whileHover={{ rotate: [-2, 3, 0], scale: 1.08 }}
+              whileHover={isMobile ? undefined : { rotate: [-2, 3, 0], scale: 1.08 }}
               transition={{ type: 'spring', stiffness: 350, damping: 15 }}
             />
             <div className="flex flex-col justify-center select-none">
@@ -375,7 +381,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -12, scale: 0.98 }}
             transition={{ type: 'spring', stiffness: 320, damping: 26 }}
-            className="pointer-events-auto lg:hidden max-w-6xl mx-auto mt-2 rounded-2xl bg-white/95 backdrop-blur-2xl border border-white/90 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.18)] p-5 overflow-hidden"
+            className="pointer-events-auto lg:hidden max-w-6xl mx-auto mt-2 rounded-2xl bg-white border border-line/80 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.18)] p-5 overflow-hidden"
           >
             <div className="space-y-4 max-h-[calc(100vh-8rem)] overflow-y-auto">
               {/* Products Section Card */}
@@ -460,7 +466,7 @@ export default function Navbar() {
               {/* Mobile Telemetry Footer */}
               <div className="pt-3 border-t border-line/40 flex items-center justify-between text-[11px] font-mono text-muted/70">
                 <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-severity-low animate-ping" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-severity-low" />
                   Systems Operational
                 </span>
                 <span>v2.4 Enterprise</span>
