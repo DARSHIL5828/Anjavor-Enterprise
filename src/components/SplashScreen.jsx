@@ -55,7 +55,7 @@ export default function SplashScreen({ children }) {
               {/* Logo */}
               <motion.img
                 src={logoMark}
-                alt="Anjavor Enterprise"
+                alt="Anjavor Technologies"
                 className="w-20 h-20 object-contain drop-shadow-md"
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
@@ -77,8 +77,8 @@ export default function SplashScreen({ children }) {
                 <span className="font-heading font-bold text-2xl text-ink tracking-tight">
                   Anjavor
                 </span>
-                <span className="text-xs font-semibold tracking-[0.25em] text-ice-strong uppercase mt-1">
-                  ENTERPRISE
+                <span className="text-xs font-semibold tracking-[0.20em] text-ice-strong uppercase mt-1">
+                  TECHNOLOGIES
                 </span>
               </motion.div>
 

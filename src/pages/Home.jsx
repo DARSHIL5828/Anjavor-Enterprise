@@ -982,7 +982,7 @@ function WhyAnjavor() {
 /* ────── Short FAQ ────── */
 function ShortFAQ() {
   const faqs = [
-    { q: 'What does Anjavor Enterprise do?', a: 'We build two products: Anjavor VAPT for vulnerability assessment and penetration testing, and Anjavor One for IT asset, device, and log management.' },
+    { q: 'What does Anjavor Technologies do?', a: 'We build two products: Anjavor VAPT for vulnerability assessment and penetration testing, and Anjavor One for IT asset, device, and log management.' },
     { q: 'Can I use both products together?', a: 'Absolutely. They are designed to complement each other—VAPT secures your assets, One manages them.' },
     { q: 'How much does it cost?', a: 'Contact us for pricing. We offer flexible plans tailored to your organization\'s size and requirements.' },
     { q: 'Can I get a demo?', a: 'Yes. Fill out the form on our Contact page and we\'ll schedule a personalized walkthrough.' },

@@ -67,7 +67,7 @@ export default function Terms() {
                 <div>
                   <h2 className="text-xl font-heading font-bold text-ink mb-3">5. Intellectual Property Rights</h2>
                   <p>
-                    All intellectual property rights in and to Anjavor Enterprise platforms, code, documentation, graphics, logos, and features remain our exclusive property. Customers retain all rights, ownership, and interest in and to their proprietary systems, configurations, logs, and generated vulnerability assessment data.
+                    All intellectual property rights in and to Anjavor Technologies platforms, code, documentation, graphics, logos, and features remain our exclusive property. Customers retain all rights, ownership, and interest in and to their proprietary systems, configurations, logs, and generated vulnerability assessment data.
                   </p>
                 </div>
 

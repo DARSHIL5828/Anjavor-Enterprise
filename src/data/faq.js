@@ -2,7 +2,7 @@ export const faqData = [
   {
     category: 'General',
     questions: [
-      { q: 'What does Anjavor Enterprise do?', a: 'Anjavor Enterprise builds cybersecurity and IT software. We offer two products: Anjavor VAPT, a vulnerability assessment and penetration testing platform, and Anjavor One, a unified IT asset, device, and log management platform.' },
+      { q: 'What does Anjavor Technologies do?', a: 'Anjavor Technologies builds cybersecurity and IT software. We offer two products: Anjavor VAPT, a vulnerability assessment and penetration testing platform, and Anjavor One, a unified IT asset, device, and log management platform.' },
       { q: 'Who are Anjavor products designed for?', a: 'Our products are designed for security teams, IT operations, DevSecOps engineers, managed security providers, and compliance professionals in organizations of all sizes.' },
       { q: 'Can I use both products together?', a: 'Yes. Anjavor VAPT and Anjavor One complement each other—VAPT secures your assets while One manages them. Together they give you complete visibility and control over your IT environment.' },
       { q: 'Do you offer professional services?', a: 'Yes. We offer penetration testing, vulnerability assessments, security audits, log monitoring setup, asset tracking setup, device management setup, and consulting and support services.' },

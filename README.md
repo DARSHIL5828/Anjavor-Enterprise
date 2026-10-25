@@ -1,6 +1,6 @@
-# Anjavor Enterprise – Marketing Website
+# Anjavor Technologies – Marketing Website
 
-A modern, high-performance, dark-glassmorphism marketing website for **Anjavor Enterprise**, showcasing our two flagship software platforms:
+A modern, high-performance, dark-glassmorphism marketing website for **Anjavor Technologies**, showcasing our two flagship software platforms:
 1. **Anjavor VAPT**: Vulnerability Assessment & Penetration Testing Platform.
 2. **Anjavor One**: Unified IT Asset, Device & Log Management Platform.
 
@@ -14,7 +14,7 @@ A modern, high-performance, dark-glassmorphism marketing website for **Anjavor E
 - **Animation**: Framer Motion
 - **Icons**: Lucide React
 - **SEO & Meta**: `react-helmet-async`, automated JSON-LD schemas, automated sitemap generation, build-time route prerendering
-- **Deployment Target**: Netlify (includes `netlify.toml` security headers and `public/_redirects` SPA fallback)
+- **Deployment Target**: Vercel (includes `vercel.json` security headers and SPA rewrites)
 
 ---
 
@@ -81,20 +81,20 @@ This updates the contact email across the entire website, including the Footer, 
 
 ---
 
-## Deployment to Netlify
+## Deployment to Vercel
 
 ### Continuous Deployment (Recommended)
 1. Push this repository to GitHub, GitLab, or Bitbucket.
-2. Link your repository in the [Netlify Dashboard](https://app.netlify.com/).
-3. Netlify will automatically detect `netlify.toml`:
+2. Import your repository in the [Vercel Dashboard](https://vercel.com/new).
+3. Vercel automatically detects Vite and reads `vercel.json`:
    - **Build command**: `npm run build`
-   - **Publish directory**: `dist`
-4. Deploys will automatically include security headers (`X-Frame-Options`, `Content-Security-Policy`, etc.) and the SPA redirect rule from `_redirects`.
+   - **Output directory**: `dist`
+4. Deploys will automatically include security headers (`X-Frame-Options`, `Content-Security-Policy`, etc.) and SPA rewrites.
 
-### Netlify CLI Deployment
+### Vercel CLI Deployment
 ```bash
 npm run build
-npx netlify deploy --prod --dir=dist
+npx vercel --prod
 ```
 
 ---
@@ -103,7 +103,6 @@ npx netlify deploy --prod --dir=dist
 
 ```
 ├── public/
-│   ├── _redirects              # Netlify SPA redirect rule (/* /index.html 200)
 │   ├── favicon.svg             # Shield favicon
 │   ├── robots.txt              # Search crawler rules pointing to sitemap
 │   └── site.webmanifest        # PWA / web application manifest
@@ -146,7 +145,7 @@ npx netlify deploy --prod --dir=dist
 │   │   ├── Security.jsx        # Trust, RBAC, tenant isolation & safeguards
 │   │   ├── About.jsx           # Mission, vision, core values & beliefs
 │   │   ├── FAQ.jsx             # Categorized FAQ with search & FAQPage schema
-│   │   ├── Contact.jsx         # Netlify demo request form & validation
+│   │   ├── Contact.jsx         # Demo request form & validation
 │   │   ├── Privacy.jsx         # Software company Privacy Policy
 │   │   ├── Terms.jsx           # Terms of Service with authorized testing mandate
 │   │   └── NotFound.jsx        # Styled 404 page with navigation fallbacks
@@ -154,7 +153,7 @@ npx netlify deploy --prod --dir=dist
 │   ├── index.css               # Design tokens, gradients, glass utilities
 │   └── main.jsx                # React DOM entry point
 ├── index.html                  # HTML entry point with typography preconnects
-├── netlify.toml                # Netlify build configuration & security headers
+├── vercel.json                 # Vercel build configuration & security headers
 ├── package.json                # Project dependencies and build scripts
 ├── postcss.config.js           # PostCSS configuration
 ├── tailwind.config.js          # Custom colors, fonts, and dark tokens

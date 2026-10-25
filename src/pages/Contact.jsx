@@ -7,13 +7,6 @@ import ParticleField from '../components/ParticleField';
 import { AnimatedSection } from '../components/AnimatedSection';
 import Toast from '../components/Toast';
 import siteConfig from '../config/site';
-
-function encode(data) {
-  return Object.keys(data)
-    .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-    .join('&');
-}
-
 export default function Contact() {
   const route = siteConfig.routes.find((r) => r.path === '/contact');
 
@@ -23,7 +16,7 @@ export default function Contact() {
     company: '',
     product: 'Anjavor VAPT',
     message: '',
-    'bot-field': '',
+    _honey: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -80,33 +73,49 @@ export default function Contact() {
     e.preventDefault();
     if (!validate()) return;
 
+    // Spam honeypot check
+    if (formData._honey) {
+      setSubmitted(true);
+      return;
+    }
+
     setSubmitting(true);
 
-    fetch('/', {
+    fetch(`https://formsubmit.co/ajax/${siteConfig.email}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: encode({
-        'form-name': 'contact',
-        ...formData,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+        company: formData.company,
+        product: formData.product,
+        message: formData.message,
+        _subject: `New Demo & Inquiry from ${formData.name} (${formData.company})`,
+        _template: 'table',
+        _captcha: 'false',
       }),
     })
-      .then(() => {
+      .then((res) => {
         setSubmitting(false);
         setSubmitted(true);
         setToast({
           open: true,
-          title: 'Demo Request Received',
-          message: `Thank you, ${formData.name}. Our security engineering team will review your requirements and respond shortly.`,
+          title: 'Demo Request Sent',
+          message: `Thank you, ${formData.name}. Your inquiry has been dispatched to ${siteConfig.email}.`,
           type: 'success',
         });
       })
       .catch((error) => {
+        // Fallback gracefully so visitor always sees confirmation
         setSubmitting(false);
         setSubmitted(true);
         setToast({
           open: true,
           title: 'Demo Request Received',
-          message: `Thank you, ${formData.name}. Our security engineering team will review your requirements and respond shortly.`,
+          message: `Thank you, ${formData.name}. Our security engineering team will review your requirements.`,
           type: 'success',
         });
       });
@@ -281,7 +290,7 @@ export default function Contact() {
                               company: '',
                               product: 'Anjavor VAPT',
                               message: '',
-                              'bot-field': '',
+                              _honey: '',
                             });
                           }}
                           className="btn-secondary text-sm"
@@ -291,22 +300,17 @@ export default function Contact() {
                       </div>
                     ) : (
                       <form
-                        name="contact"
-                        method="POST"
-                        data-netlify="true"
-                        data-netlify-honeypot="bot-field"
                         onSubmit={handleSubmit}
                         className="space-y-5"
                         noValidate
                       >
-                        {/* Netlify Forms Hidden Inputs */}
-                        <input type="hidden" name="form-name" value="contact" />
+                        {/* Anti-spam Honeypot */}
                         <div className="hidden">
                           <label>
                             Don’t fill this out if you're human:{' '}
                             <input
-                              name="bot-field"
-                              value={formData['bot-field']}
+                              name="_honey"
+                              value={formData._honey}
                               onChange={handleChange}
                             />
                           </label>

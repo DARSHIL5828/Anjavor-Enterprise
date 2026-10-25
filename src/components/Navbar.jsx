@@ -115,11 +115,11 @@ export default function Navbar() {
           <Link
             to="/"
             className="flex items-center gap-3 group py-0.5 select-none flex-shrink-0"
-            aria-label="Anjavor Enterprise Home"
+            aria-label="Anjavor Technologies Home"
           >
             <motion.img
               src={logoMark}
-              alt="Anjavor Enterprise Logo"
+              alt="Anjavor Technologies Logo"
               className="h-10 w-10 sm:h-11 sm:w-11 object-contain drop-shadow-sm flex-shrink-0"
               whileHover={isMobile ? undefined : { rotate: [-2, 3, 0], scale: 1.08 }}
               transition={{ type: 'spring', stiffness: 350, damping: 15 }}
@@ -128,8 +128,8 @@ export default function Navbar() {
               <span className="font-heading font-bold text-xl sm:text-2xl text-ink tracking-tight leading-none group-hover:text-ice-strong transition-colors">
                 Anjavor
               </span>
-              <span className="text-[10px] font-bold tracking-[0.24em] text-ice-strong uppercase leading-none mt-1 sm:mt-1.5 font-sans">
-                ENTERPRISE
+              <span className="text-[9px] sm:text-[10px] font-bold tracking-[0.20em] text-ice-strong uppercase leading-none mt-1 sm:mt-1.5 font-sans">
+                TECHNOLOGIES
               </span>
             </div>
           </Link>

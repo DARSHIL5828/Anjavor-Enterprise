@@ -263,13 +263,13 @@ export default function About() {
           <div className="container-default text-center">
             <AnimatedSection>
               <span className="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-ice-soft border border-ice/20 text-ice-strong mb-6">
-                About Anjavor Enterprise
+                About Anjavor Technologies
               </span>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold gradient-text-mixed mb-6">
                 Discover. Assess. Remediate. Secure.
               </h1>
               <p className="text-lg text-muted max-w-3xl mx-auto leading-relaxed">
-                Anjavor Enterprise builds dedicated cybersecurity and IT management software designed to give organizations full visibility, proactive vulnerability reduction, and unified endpoint control.
+                Anjavor Technologies builds dedicated cybersecurity and IT management software designed to give organizations full visibility, proactive vulnerability reduction, and unified endpoint control.
               </p>
             </AnimatedSection>
 

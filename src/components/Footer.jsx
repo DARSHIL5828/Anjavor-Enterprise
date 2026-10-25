@@ -46,11 +46,11 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1 mb-4 lg:mb-0">
-            <Link to="/" className="inline-flex items-center gap-3 mb-4 group" aria-label="Anjavor Enterprise home">
+            <Link to="/" className="inline-flex items-center gap-3 mb-4 group" aria-label="Anjavor Technologies home">
               <img src={logoMark} alt="" className="w-9 h-9 object-contain transition-transform duration-300 group-hover:scale-105" aria-hidden="true" />
               <div className="flex flex-col">
                 <span className="font-heading font-bold text-white text-lg tracking-tight leading-none">Anjavor</span>
-                <span className="text-[10px] tracking-[0.24em] font-bold text-ice uppercase leading-none mt-1 font-sans">ENTERPRISE</span>
+                <span className="text-[10px] tracking-[0.20em] font-bold text-ice uppercase leading-none mt-1 font-sans">TECHNOLOGIES</span>
               </div>
             </Link>
             <p className="text-sm text-gray-400 mb-4 max-w-xs">{siteConfig.tagline}</p>
